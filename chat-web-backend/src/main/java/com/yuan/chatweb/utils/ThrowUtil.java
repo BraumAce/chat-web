@@ -8,7 +8,7 @@ import com.yuan.chatweb.exception.BusinessException;
  *
  * @author BraumAce
  */
-public class ThrowUtils {
+public class ThrowUtil {
 
     /**
      * 条件成立则抛异常

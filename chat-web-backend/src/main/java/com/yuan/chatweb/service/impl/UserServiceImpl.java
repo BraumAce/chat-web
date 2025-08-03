@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yuan.chatweb.enums.UserErrorCode;
 import com.yuan.chatweb.exception.BusinessException;
-import com.yuan.chatweb.utils.ThrowUtils;
+import com.yuan.chatweb.utils.ThrowUtil;
 import com.yuan.chatweb.mapper.UserMapper;
 import com.yuan.chatweb.model.dto.UserDTO;
 import com.yuan.chatweb.model.entity.UserDO;
@@ -52,14 +52,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public UserDTO register(UserRegisterRequest request) {
         // 检查用户名是否已存在
         UserDO existingUser = this.getOne(new QueryWrapper<UserDO>().eq("username", request.getUsername()));
-        ThrowUtils.throwIf(existingUser != null, UserErrorCode.USER_USERNAME_EXIST);
+        ThrowUtil.throwIf(existingUser != null, UserErrorCode.USER_USERNAME_EXIST);
 
         // 检查邮箱是否已存在
         existingUser = this.getOne(new QueryWrapper<UserDO>().eq("email", request.getEmail()));
-        ThrowUtils.throwIf(existingUser != null, UserErrorCode.USER_EMAIL_EXIST);
+        ThrowUtil.throwIf(existingUser != null, UserErrorCode.USER_EMAIL_EXIST);
 
         // 检查两次输入的密码是否一致
-        ThrowUtils.throwIf(!request.getPassword().equals(request.getConfirmPassword()), UserErrorCode.USER_PASSWORD_INCONSISTENT);
+        ThrowUtil.throwIf(!request.getPassword().equals(request.getConfirmPassword()), UserErrorCode.USER_PASSWORD_INCONSISTENT);
 
         // 创建新用户
         UserDO user = new UserDO();
@@ -90,7 +90,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Override
     public UserDTO editUserInfo(Long id, UserEditRequest request) {
         UserDO user = userMapper.selectById(id);
-        ThrowUtils.throwIf(user == null, UserErrorCode.USER_NOT_EXIST);
+        ThrowUtil.throwIf(user == null, UserErrorCode.USER_NOT_EXIST);
 
         // 更新用户信息
         if (request.getNickname() != null) {
@@ -121,10 +121,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public boolean forgotPassword(String username, String email, String newPassword) {
         // 根据用户名查找用户
         UserDO user = userMapper.selectOne(new QueryWrapper<UserDO>().eq("username", username));
-        ThrowUtils.throwIf(user == null, UserErrorCode.USER_USERNAME_NOT_EXIST);
+        ThrowUtil.throwIf(user == null, UserErrorCode.USER_USERNAME_NOT_EXIST);
 
         // 验证邮箱
-        ThrowUtils.throwIf(!user.getEmail().equals(email), UserErrorCode.USER_EMAIL_NOT_EXIST);
+        ThrowUtil.throwIf(!user.getEmail().equals(email), UserErrorCode.USER_EMAIL_NOT_EXIST);
 
         // 更新密码
         user.setPassword(passwordEncoder.encode(newPassword));

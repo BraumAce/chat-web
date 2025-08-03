@@ -63,6 +63,18 @@ public class Result<T> implements Serializable {
     /**
      * 成功结果
      *
+     * @param data    数据
+     * @param message 消息
+     * @param <T>     数据类型
+     * @return 结果
+     */
+    public static <T> Result<T> success(T data, String message) {
+        return new Result<>(true, 200, data, message);
+    }
+
+    /**
+     * 成功结果
+     *
      * @param <T> 数据类型
      * @return 结果
      */

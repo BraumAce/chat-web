@@ -20,22 +20,23 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
--- 模型配置表
-CREATE TABLE `model_config` (
-  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '模型配置ID',
-  `model_name` VARCHAR(100) NOT NULL COMMENT '模型名称',
-  `model_type` VARCHAR(50) NOT NULL COMMENT '模型类型',
-  `api_key` VARCHAR(255) NOT NULL COMMENT 'API密钥',
-  `api_url` VARCHAR(255) NOT NULL COMMENT 'API地址',
-  `is_active` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '是否启用(1:启用,0:禁用)',
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_model_name` (`model_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模型配置表';
+-- 大模型配置表
+CREATE TABLE `llm_config` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_id` bigint NOT NULL COMMENT '用户ID',
+    `model_name` varchar(100) NOT NULL COMMENT '模型名称',
+    `model_id` varchar(100) NOT NULL COMMENT '模型ID',
+    `api_url` varchar(500) NOT NULL COMMENT 'API地址',
+    `api_key` varchar(500) NOT NULL COMMENT 'API密钥',
+    `is_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用 0:禁用 1:启用',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='大模型配置表';
 
 -- 对话表
-CREATE TABLE `conversation` (
+CREATE TABLE `chat` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '对话ID',
   `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户ID',
   `title` VARCHAR(255) NOT NULL COMMENT '对话标题',
@@ -45,8 +46,8 @@ CREATE TABLE `conversation` (
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_model_config_id` (`model_config_id`),
-  CONSTRAINT `fk_conversation_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_conversation_model_config_id` FOREIGN KEY (`model_config_id`) REFERENCES `model_config` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_chat_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_chat_model_config_id` FOREIGN KEY (`model_config_id`) REFERENCES `llm_config` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='对话表';
 
 -- 消息表
@@ -58,5 +59,5 @@ CREATE TABLE `message` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_conversation_id` (`conversation_id`),
-  CONSTRAINT `fk_message_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `conversation` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_message_conversation_id` FOREIGN KEY (`conversation_id`) REFERENCES `chat` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';

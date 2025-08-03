@@ -29,11 +29,17 @@ mybatis-plus:
     db-config:
       id-type: auto
       table-prefix: 
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
   mapper-locations: classpath*:/mapper/**/*.xml
 
 # Knife4j 配置
 knife4j:
   enable: true
+  production: false
+  setting:
+    language: zh_cn
   openapi:
     title: Chat Web API
     description: Chat Web 后端接口文档
@@ -43,6 +49,14 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.yuan.chatweb.controller
+
+# 大模型配置
+llm:
+  default:
+    model-name: GPT-3.5 Turbo
+    model-id: gpt-3.5-turbo
+    api-url: https://api.openai.com/v1/chat/completions
+    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # 日志配置
 logging:
