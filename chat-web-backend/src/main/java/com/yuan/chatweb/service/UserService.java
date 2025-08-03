@@ -1,6 +1,6 @@
 package com.yuan.chatweb.service;
 
-import com.yuan.chatweb.model.entity.UserDO;
+import com.yuan.chatweb.model.dto.UserDTO;
 import com.yuan.chatweb.model.request.user.UserLoginRequest;
 import com.yuan.chatweb.model.request.user.UserRegisterRequest;
 import com.yuan.chatweb.model.request.user.UserEditRequest;
@@ -17,7 +17,7 @@ public interface UserService {
      * @param request 登录请求参数
      * @return 登录成功的用户信息
      */
-    UserDO login(UserLoginRequest request);
+    UserDTO login(UserLoginRequest request);
 
     /**
      * 用户注册
@@ -25,7 +25,7 @@ public interface UserService {
      * @param request 注册请求参数
      * @return 注册成功的用户信息
      */
-    UserDO register(UserRegisterRequest request);
+    UserDTO register(UserRegisterRequest request);
 
     /**
      * 根据用户名或邮箱查找用户
@@ -33,7 +33,7 @@ public interface UserService {
      * @param usernameOrEmail 用户名或邮箱
      * @return 用户信息
      */
-    UserDO findByUsernameOrEmail(String usernameOrEmail);
+    UserDTO findByUsernameOrEmail(String usernameOrEmail);
 
     /**
      * 根据ID查找用户
@@ -41,7 +41,7 @@ public interface UserService {
      * @param id 用户ID
      * @return 用户信息
      */
-    UserDO findById(Long id);
+    UserDTO findById(Long id);
 
     /**
      * 用户编辑个人信息
@@ -50,7 +50,7 @@ public interface UserService {
      * @param request 编辑个人信息请求参数
      * @return 编辑后的用户信息
      */
-    UserDO editUserInfo(Long id, UserEditRequest request);
+    UserDTO editUserInfo(Long id, UserEditRequest request);
 
     /**
      * 忘记密码

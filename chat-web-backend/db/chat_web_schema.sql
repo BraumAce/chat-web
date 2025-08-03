@@ -1,4 +1,9 @@
 -- MySQL database schema for ChatWeb application
+-- 创建库
+CREATE DATABASE IF NOT EXISTS chat_web;
+
+-- 切换库
+USE chat_web;
 
 -- 用户表
 CREATE TABLE `user` (

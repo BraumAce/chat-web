@@ -2,12 +2,17 @@ package com.yuan.chatweb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yuan.chatweb.enums.UserErrorCode;
+import com.yuan.chatweb.exception.BusinessException;
+import com.yuan.chatweb.utils.ThrowUtils;
 import com.yuan.chatweb.mapper.UserMapper;
+import com.yuan.chatweb.model.dto.UserDTO;
 import com.yuan.chatweb.model.entity.UserDO;
 import com.yuan.chatweb.model.request.user.UserLoginRequest;
 import com.yuan.chatweb.model.request.user.UserRegisterRequest;
 import com.yuan.chatweb.model.request.user.UserEditRequest;
 import com.yuan.chatweb.service.UserService;
+import com.yuan.chatweb.convert.UserConvert;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,39 +33,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserDO login(UserLoginRequest request) {
+    public UserDTO login(UserLoginRequest request) {
         // 根据用户名查找用户
         UserDO user = userMapper.selectOne(new QueryWrapper<UserDO>().eq("username", request.getUsername()));
         if (user == null) {
-            throw new RuntimeException("用户不存在");
+            throw new BusinessException(UserErrorCode.USER_NOT_EXIST);
         }
 
         // 验证密码
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("密码错误");
+            throw new BusinessException(UserErrorCode.USER_PASSWORD_ERROR);
         }
 
-        return user;
+        return UserConvert.INSTANCE.convertToUserDTO(user);
     }
 
     @Override
-    public UserDO register(UserRegisterRequest request) {
+    public UserDTO register(UserRegisterRequest request) {
         // 检查用户名是否已存在
-        UserDO existingUser = findByUsernameOrEmail(request.getUsername());
-        if (existingUser != null) {
-            throw new RuntimeException("用户名已存在");
-        }
+        UserDO existingUser = this.getOne(new QueryWrapper<UserDO>().eq("username", request.getUsername()));
+        ThrowUtils.throwIf(existingUser != null, UserErrorCode.USER_USERNAME_EXIST);
 
         // 检查邮箱是否已存在
-        existingUser = userMapper.selectOne(new QueryWrapper<UserDO>().eq("email", request.getEmail()));
-        if (existingUser != null) {
-            throw new RuntimeException("邮箱已被注册");
-        }
+        existingUser = this.getOne(new QueryWrapper<UserDO>().eq("email", request.getEmail()));
+        ThrowUtils.throwIf(existingUser != null, UserErrorCode.USER_EMAIL_EXIST);
 
         // 检查两次输入的密码是否一致
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("两次输入的密码不一致");
-        }
+        ThrowUtils.throwIf(!request.getPassword().equals(request.getConfirmPassword()), UserErrorCode.USER_PASSWORD_INCONSISTENT);
 
         // 创建新用户
         UserDO user = new UserDO();
@@ -70,27 +69,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userMapper.insert(user);
-        return user;
+        return UserConvert.INSTANCE.convertToUserDTO(user);
     }
 
     @Override
-    public UserDO findByUsernameOrEmail(String usernameOrEmail) {
-        QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", usernameOrEmail).or().eq("email", usernameOrEmail);
-        return userMapper.selectOne(queryWrapper);
+    public UserDTO findByUsernameOrEmail(String usernameOrEmail) {
+        UserDO userDO = this.getOne(new QueryWrapper<UserDO>()
+                .eq("username", usernameOrEmail)
+                .or()
+                .eq("email", usernameOrEmail));
+        return userDO != null ? UserConvert.INSTANCE.convertToUserDTO(userDO) : null;
     }
 
     @Override
-    public UserDO findById(Long id) {
-        return userMapper.selectById(id);
+    public UserDTO findById(Long id) {
+        UserDO userDO = userMapper.selectById(id);
+        return userDO != null ? UserConvert.INSTANCE.convertToUserDTO(userDO) : null;
     }
 
     @Override
-    public UserDO editUserInfo(Long id, UserEditRequest request) {
+    public UserDTO editUserInfo(Long id, UserEditRequest request) {
         UserDO user = userMapper.selectById(id);
-        if (user == null) {
-            throw new RuntimeException("用户不存在");
-        }
+        ThrowUtils.throwIf(user == null, UserErrorCode.USER_NOT_EXIST);
 
         // 更新用户信息
         if (request.getNickname() != null) {
@@ -107,28 +107,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (request.getOldPassword() != null && request.getNewPassword() != null) {
             // 验证旧密码
             if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-                throw new RuntimeException("原密码错误");
+                throw new BusinessException(UserErrorCode.USER_OLD_PASSWORD_ERROR);
             }
             // 更新密码
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         }
 
         userMapper.updateById(user);
-        return user;
+        return UserConvert.INSTANCE.convertToUserDTO(user);
     }
 
     @Override
     public boolean forgotPassword(String username, String email, String newPassword) {
         // 根据用户名查找用户
         UserDO user = userMapper.selectOne(new QueryWrapper<UserDO>().eq("username", username));
-        if (user == null) {
-            throw new RuntimeException("用户名不正确或不存在");
-        }
+        ThrowUtils.throwIf(user == null, UserErrorCode.USER_USERNAME_NOT_EXIST);
 
         // 验证邮箱
-        if (!user.getEmail().equals(email)) {
-            throw new RuntimeException("邮箱不正确或不存在");
-        }
+        ThrowUtils.throwIf(!user.getEmail().equals(email), UserErrorCode.USER_EMAIL_NOT_EXIST);
 
         // 更新密码
         user.setPassword(passwordEncoder.encode(newPassword));

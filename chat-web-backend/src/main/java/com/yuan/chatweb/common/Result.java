@@ -1,4 +1,4 @@
-package com.yuan.chatweb.utils.common;
+package com.yuan.chatweb.common;
 
 import com.yuan.chatweb.enums.ErrorCode;
 import lombok.Data;

@@ -1,11 +1,16 @@
 package com.yuan.chatweb.controller;
 
-import com.yuan.chatweb.model.entity.UserDO;
+import com.yuan.chatweb.model.dto.UserDTO;
 import com.yuan.chatweb.model.request.user.UserLoginRequest;
 import com.yuan.chatweb.model.request.user.UserRegisterRequest;
 import com.yuan.chatweb.model.request.user.UserEditRequest;
-import com.yuan.chatweb.utils.common.Result;
+import com.yuan.chatweb.model.vo.UserVO;
+import com.yuan.chatweb.convert.UserConvert;
+import com.yuan.chatweb.common.Result;
 import com.yuan.chatweb.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,6 +22,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/api/user")
+@Api(tags = "用户相关接口")
 public class UserController {
 
     @Resource
@@ -29,13 +35,11 @@ public class UserController {
      * @return 登录结果
      */
     @PostMapping("/login")
-    public Result<UserDO> login(@RequestBody UserLoginRequest request) {
-        try {
-            UserDO user = userService.login(request);
-            return Result.success(user);
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
-        }
+    @ApiOperation(value = "用户登录", notes = "用户登录系统")
+    public Result<UserVO> login(@RequestBody @ApiParam("登录请求参数") UserLoginRequest request) {
+        UserDTO userDTO = userService.login(request);
+        UserVO userVO = UserConvert.INSTANCE.convertToUserVO(userDTO);
+        return Result.success(userVO);
     }
 
     /**
@@ -45,13 +49,11 @@ public class UserController {
      * @return 注册结果
      */
     @PostMapping("/register")
-    public Result<UserDO> register(@RequestBody UserRegisterRequest request) {
-        try {
-            UserDO user = userService.register(request);
-            return Result.success(user);
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
-        }
+    @ApiOperation(value = "用户注册", notes = "用户注册新账户")
+    public Result<UserVO> register(@RequestBody @ApiParam("注册请求参数") UserRegisterRequest request) {
+        UserDTO userDTO = userService.register(request);
+        UserVO userVO = UserConvert.INSTANCE.convertToUserVO(userDTO);
+        return Result.success(userVO);
     }
 
     /**
@@ -62,13 +64,12 @@ public class UserController {
      * @return 编辑结果
      */
     @PutMapping("/{id}/edit")
-    public Result<UserDO> editUserInfo(@PathVariable Long id, @RequestBody UserEditRequest request) {
-        try {
-            UserDO user = userService.editUserInfo(id, request);
-            return Result.success(user);
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
-        }
+    @ApiOperation(value = "编辑用户个人信息", notes = "编辑用户个人信息，包括昵称、邮箱、头像和密码")
+    public Result<UserVO> editUserInfo(@PathVariable @ApiParam("用户ID") Long id, 
+                                       @RequestBody @ApiParam("编辑个人信息请求参数") UserEditRequest request) {
+        UserDTO userDTO = userService.editUserInfo(id, request);
+        UserVO userVO = UserConvert.INSTANCE.convertToUserVO(userDTO);
+        return Result.success(userVO);
     }
 
     /**
@@ -78,13 +79,10 @@ public class UserController {
      * @return 忘记密码结果
      */
     @PutMapping("/forgotPassword")
-    public Result<Boolean> forgotPassword(@RequestBody UserEditRequest request) {
-        try {
-            boolean result = userService.forgotPassword(request.getUsername(), request.getEmail(), request.getNewPassword());
-            return Result.success(result);
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
-        }
+    @ApiOperation(value = "忘记密码", notes = "用户忘记密码时，通过用户名和邮箱验证后重置密码")
+    public Result<Boolean> forgotPassword(@RequestBody @ApiParam("忘记密码请求参数") UserEditRequest request) {
+        boolean result = userService.forgotPassword(request.getUsername(), request.getEmail(), request.getNewPassword());
+        return Result.success(result);
     }
 
     /**
@@ -94,12 +92,10 @@ public class UserController {
      * @return 用户信息
      */
     @GetMapping("/{id}")
-    public Result<UserDO> getUserInfo(@PathVariable Long id) {
-        try {
-            UserDO user = userService.findById(id);
-            return Result.success(user);
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
-        }
+    @ApiOperation(value = "获取用户信息", notes = "根据用户ID获取用户信息")
+    public Result<UserVO> getUserInfo(@PathVariable @ApiParam("用户ID") Long id) {
+        UserDTO userDTO = userService.findById(id);
+        UserVO userVO = UserConvert.INSTANCE.convertToUserVO(userDTO);
+        return Result.success(userVO);
     }
 }

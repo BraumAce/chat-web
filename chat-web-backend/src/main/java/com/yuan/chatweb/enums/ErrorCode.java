@@ -1,42 +1,23 @@
 package com.yuan.chatweb.enums;
 
 /**
- * 自定义错误码
+ * 通用错误码接口
  *
  * @author BraumAce
  */
-public enum ErrorCode {
-
-    SUCCESS(0, "ok"),
-    PARAMS_ERROR(40000, "请求参数错误"),
-    NOT_LOGIN_ERROR(40100, "未登录"),
-    NO_AUTH_ERROR(40101, "无权限"),
-    NOT_FOUND_ERROR(40400, "请求数据不存在"),
-    FORBIDDEN_ERROR(40300, "禁止访问"),
-    SYSTEM_ERROR(50000, "系统内部异常"),
-    OPERATION_ERROR(50001, "操作失败");
+public interface ErrorCode {
 
     /**
-     * 状态码
+     * 获取错误码
+     *
+     * @return 错误码
      */
-    private final int code;
+    int getCode();
 
     /**
-     * 信息
+     * 获取错误信息
+     *
+     * @return 错误信息
      */
-    private final String message;
-
-    ErrorCode(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
+    String getMessage();
 }
