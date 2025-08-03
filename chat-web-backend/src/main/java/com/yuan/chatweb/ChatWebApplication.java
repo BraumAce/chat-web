@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 聊天Web应用程序启动类
  * 
- * @author yuan
+ * @author BraumAce
  */
 @SpringBootApplication
-@MapperScan("com.yuan.chatweb.repository")
+@MapperScan("com.yuan.chatweb.mapper")
 public class ChatWebApplication {
 
     /**

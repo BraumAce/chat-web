@@ -43,4 +43,4 @@ src/main/resources/application-dev.properties
 ### 其他 ###
 .DS_Store
 node_modules/
-.trae/
+.lingma/
