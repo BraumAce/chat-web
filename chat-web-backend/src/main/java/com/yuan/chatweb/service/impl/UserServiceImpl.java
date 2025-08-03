@@ -16,7 +16,6 @@ import com.yuan.chatweb.convert.UserConvert;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * 用户服务实现类
@@ -29,9 +28,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Resource
     private UserMapper userMapper;
 
-    @Resource
-    private BCryptPasswordEncoder passwordEncoder;
-
     @Override
     public UserDTO login(UserLoginRequest request) {
         // 根据用户名查找用户
@@ -41,7 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
 
         // 验证密码
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!user.getPassword().equals(request.getPassword())) {
             throw new BusinessException(UserErrorCode.USER_PASSWORD_ERROR);
         }
 
@@ -66,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setNickname(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(request.getPassword());
 
         userMapper.insert(user);
         return UserConvert.INSTANCE.convertToUserDTO(user);
@@ -106,11 +102,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         // 修改密码逻辑：需要验证旧密码
         if (request.getOldPassword() != null && request.getNewPassword() != null) {
             // 验证旧密码
-            if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            if (!request.getOldPassword().equals(user.getPassword())) {
                 throw new BusinessException(UserErrorCode.USER_OLD_PASSWORD_ERROR);
             }
             // 更新密码
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            user.setPassword(request.getNewPassword());
         }
 
         userMapper.updateById(user);
@@ -127,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         ThrowUtil.throwIf(!user.getEmail().equals(email), UserErrorCode.USER_EMAIL_NOT_EXIST);
 
         // 更新密码
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(newPassword);
         return userMapper.updateById(user) > 0;
     }
 }
