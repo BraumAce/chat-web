@@ -1,4 +1,4 @@
-package com.yuan.chatweb.enums;
+package com.yuan.chatweb.enums.exception;
 
 /**
  * 通用错误码接口

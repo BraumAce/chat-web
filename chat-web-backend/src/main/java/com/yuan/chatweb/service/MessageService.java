@@ -1,7 +1,7 @@
 package com.yuan.chatweb.service;
 
 import com.yuan.chatweb.model.entity.MessageDO;
-import com.yuan.chatweb.model.request.llm.ChatMessageRequest;
+import com.yuan.chatweb.model.request.message.MessageCreateRequest;
 import com.yuan.chatweb.model.vo.MessageVO;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -15,22 +15,31 @@ import java.util.List;
 public interface MessageService {
 
     /**
+     * 流式发送消息
+     *
+     * @param userId  用户ID
+     * @param request 请求参数
+     * @return SseEmitter对象
+     */
+    SseEmitter chatTextStream(Long userId, MessageCreateRequest request);
+
+    /**
+     * 非流式发送消息
+     *
+     * @param userId  用户ID
+     * @param request 请求参数
+     * @return SseEmitter对象
+     */
+    SseEmitter chatText(Long userId, MessageCreateRequest request);
+
+    /**
      * 发送消息
      *
      * @param userId  用户ID
      * @param request 请求参数
      * @return 消息信息
      */
-    MessageVO sendMessage(Long userId, ChatMessageRequest request);
-
-    /**
-     * 流式发送消息
-     *
-     * @param userId  用户ID
-     * @param request 请求参数
-     * @return SSE连接
-     */
-    SseEmitter streamMessage(Long userId, ChatMessageRequest request);
+    MessageVO sendMessage(Long userId, MessageCreateRequest request);
 
     /**
      * 获取对话消息列表

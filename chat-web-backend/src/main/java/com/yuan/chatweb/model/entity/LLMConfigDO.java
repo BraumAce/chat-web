@@ -2,6 +2,8 @@ package com.yuan.chatweb.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +13,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("llm_config")
-public class LLMConfigDO {
+public class LLMConfigDO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * 主键ID

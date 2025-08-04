@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://localhost:3306/chat_web?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: 12345678
 
 # MyBatis-Plus配置
 mybatis-plus:

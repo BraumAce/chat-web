@@ -1,12 +1,10 @@
-package com.yuan.chatweb.convert;
+package com.yuan.chatweb.utils.convert;
 
 import com.yuan.chatweb.model.dto.UserDTO;
 import com.yuan.chatweb.model.entity.UserDO;
 import com.yuan.chatweb.model.vo.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 /**
  * 用户对象转换接口

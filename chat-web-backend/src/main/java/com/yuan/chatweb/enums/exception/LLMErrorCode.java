@@ -1,4 +1,4 @@
-package com.yuan.chatweb.enums;
+package com.yuan.chatweb.enums.exception;
 
 import lombok.Getter;
 

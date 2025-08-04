@@ -1,25 +1,19 @@
-package com.yuan.chatweb.model.entity;
+package com.yuan.chatweb.model.dto;
 
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 消息实体类
+ * 消息DTO
  *
  * @author BraumAce
  */
 @Data
-@TableName("message")
-public class MessageDO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class MessageDTO {
     /**
-     * 主键ID
+     * 消息ID
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -40,6 +34,5 @@ public class MessageDO implements Serializable {
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 }

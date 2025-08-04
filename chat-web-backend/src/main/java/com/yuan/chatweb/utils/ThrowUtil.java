@@ -1,6 +1,6 @@
 package com.yuan.chatweb.utils;
 
-import com.yuan.chatweb.enums.ErrorCode;
+import com.yuan.chatweb.enums.exception.ErrorCode;
 import com.yuan.chatweb.exception.BusinessException;
 
 /**

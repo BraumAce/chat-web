@@ -1,10 +1,12 @@
 package com.yuan.chatweb.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yuan.chatweb.config.LLMConfig;
-import com.yuan.chatweb.convert.LLMConfigConverter;
-import com.yuan.chatweb.enums.LLMErrorCode;
+import com.yuan.chatweb.model.entity.UserDO;
+import com.yuan.chatweb.utils.convert.LLMConfigConverter;
+import com.yuan.chatweb.enums.exception.LLMErrorCode;
 import com.yuan.chatweb.mapper.LLMConfigMapper;
 import com.yuan.chatweb.model.entity.LLMConfigDO;
 import com.yuan.chatweb.model.request.llm.LLMConfigRequest;
@@ -126,8 +128,9 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
     @Override
     public LLMConfigVO getCurrentConfig(Long userId) {
         // 查询用户启用的模型配置
-        QueryWrapper<LLMConfigDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId).eq("is_enabled", 1);
+        LambdaQueryWrapper<LLMConfigDO> queryWrapper = new LambdaQueryWrapper<LLMConfigDO>()
+                .eq(LLMConfigDO::getId, userId)
+                .eq(LLMConfigDO::getIsEnabled, true);
         List<LLMConfigDO> userConfigs = llmConfigMapper.selectList(queryWrapper);
 
         // 如果用户有自定义的启用模型，返回第一个

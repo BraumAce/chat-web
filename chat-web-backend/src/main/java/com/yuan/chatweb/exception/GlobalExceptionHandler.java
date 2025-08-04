@@ -1,6 +1,6 @@
 package com.yuan.chatweb.exception;
 
-import com.yuan.chatweb.enums.SystemErrorCode;
+import com.yuan.chatweb.enums.exception.SystemErrorCode;
 import com.yuan.chatweb.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;

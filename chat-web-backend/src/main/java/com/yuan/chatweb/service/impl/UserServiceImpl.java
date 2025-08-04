@@ -2,7 +2,7 @@ package com.yuan.chatweb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yuan.chatweb.enums.UserErrorCode;
+import com.yuan.chatweb.enums.exception.UserErrorCode;
 import com.yuan.chatweb.exception.BusinessException;
 import com.yuan.chatweb.utils.ThrowUtil;
 import com.yuan.chatweb.mapper.UserMapper;
@@ -12,7 +12,7 @@ import com.yuan.chatweb.model.request.user.UserLoginRequest;
 import com.yuan.chatweb.model.request.user.UserRegisterRequest;
 import com.yuan.chatweb.model.request.user.UserEditRequest;
 import com.yuan.chatweb.service.UserService;
-import com.yuan.chatweb.convert.UserConvert;
+import com.yuan.chatweb.utils.convert.UserConvert;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

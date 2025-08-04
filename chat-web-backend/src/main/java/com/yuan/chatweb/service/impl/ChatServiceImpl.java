@@ -1,12 +1,13 @@
 package com.yuan.chatweb.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yuan.chatweb.convert.LLMConfigConverter;
-import com.yuan.chatweb.enums.LLMErrorCode;
+import com.yuan.chatweb.model.request.chat.ChatCreateRequest;
+import com.yuan.chatweb.utils.convert.ChatConverter;
+import com.yuan.chatweb.enums.exception.LLMErrorCode;
 import com.yuan.chatweb.mapper.ChatMapper;
 import com.yuan.chatweb.model.entity.ChatDO;
-import com.yuan.chatweb.model.request.llm.ChatRequest;
 import com.yuan.chatweb.model.vo.ChatVO;
 import com.yuan.chatweb.service.ChatService;
 import com.yuan.chatweb.service.LLMConfigService;
@@ -32,7 +33,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatMapper, ChatDO> implements 
     private LLMConfigService llmConfigService;
 
     @Override
-    public ChatVO createChat(Long userId, ChatRequest request) {
+    public ChatVO createChat(Long userId, ChatCreateRequest request) {
         // 创建对话DO
         ChatDO chatDO = new ChatDO();
         chatDO.setUserId(userId);
@@ -51,19 +52,19 @@ public class ChatServiceImpl extends ServiceImpl<ChatMapper, ChatDO> implements 
         ThrowUtil.throwIf(!saved, LLMErrorCode.CONFIG_OPERATION_ERROR, "创建对话失败");
 
         // 转换为VO并返回
-        return LLMConfigConverter.INSTANCE.toChatVO(chatDO);
+        return ChatConverter.INSTANCE.toChatVO(chatDO);
     }
 
     @Override
     public List<ChatVO> listChatsByUserId(Long userId) {
         // 根据用户ID查询对话列表
-        QueryWrapper<ChatDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId);
+        LambdaQueryWrapper<ChatDO> queryWrapper = new LambdaQueryWrapper<ChatDO>()
+                .eq(ChatDO::getUserId, userId);
         List<ChatDO> chatList = chatMapper.selectList(queryWrapper);
 
         // 转换为VO列表并返回
         return chatList.stream()
-                .map(LLMConfigConverter.INSTANCE::toChatVO)
+                .map(ChatConverter.INSTANCE::toChatVO)
                 .collect(Collectors.toList());
     }
 

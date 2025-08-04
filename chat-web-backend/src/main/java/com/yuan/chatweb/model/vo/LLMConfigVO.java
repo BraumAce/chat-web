@@ -1,5 +1,7 @@
 package com.yuan.chatweb.model.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -8,40 +10,27 @@ import lombok.Data;
  * @author BraumAce
  */
 @Data
+@ApiModel(description = "大模型配置VO类")
 public class LLMConfigVO {
 
-    /**
-     * 主键ID
-     */
+    @ApiModelProperty("模型配置ID")
     private Long id;
 
-    /**
-     * 用户ID
-     */
+    @ApiModelProperty("用户ID")
     private Long userId;
 
-    /**
-     * 模型名称
-     */
+    @ApiModelProperty("模型名称")
     private String modelName;
 
-    /**
-     * 模型ID
-     */
+    @ApiModelProperty("模型ID")
     private String modelId;
 
-    /**
-     * API地址
-     */
+    @ApiModelProperty("API地址")
     private String apiUrl;
 
-    /**
-     * API密钥
-     */
+    @ApiModelProperty("API密钥")
     private String apiKey;
 
-    /**
-     * 是否启用
-     */
+    @ApiModelProperty("是否启用")
     private Boolean isEnabled;
 }

@@ -1,5 +1,7 @@
 package com.yuan.chatweb.model.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -9,30 +11,21 @@ import java.time.LocalDateTime;
  * @author BraumAce
  */
 @Data
+@ApiModel(description = "消息VO类")
 public class MessageVO {
 
-    /**
-     * 主键ID
-     */
+    @ApiModelProperty("主键ID")
     private Long id;
 
-    /**
-     * 对话ID
-     */
-    private Long conversationId;
+    @ApiModelProperty("对话ID")
+    private Long chatId;
 
-    /**
-     * 发送者类型(1:用户,2:AI)
-     */
-    private Integer senderType;
+    @ApiModelProperty("发送者类型")
+    private String senderType;
 
-    /**
-     * 消息内容
-     */
+    @ApiModelProperty("消息内容")
     private String content;
 
-    /**
-     * 创建时间
-     */
+    @ApiModelProperty("创建时间")
     private LocalDateTime createdAt;
 }

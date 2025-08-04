@@ -1,6 +1,6 @@
 package com.yuan.chatweb.common;
 
-import com.yuan.chatweb.enums.ErrorCode;
+import com.yuan.chatweb.enums.exception.ErrorCode;
 import lombok.Data;
 
 import java.io.Serializable;

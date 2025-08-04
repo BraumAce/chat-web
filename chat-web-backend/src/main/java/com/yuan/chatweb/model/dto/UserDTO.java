@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
  * @author BraumAce
  */
 @Data
-public class UserDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class UserDTO {
 
     /**
      * 用户ID

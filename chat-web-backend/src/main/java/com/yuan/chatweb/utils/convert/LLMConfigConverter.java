@@ -1,5 +1,6 @@
-package com.yuan.chatweb.convert;
+package com.yuan.chatweb.utils.convert;
 
+import com.yuan.chatweb.model.dto.LLMConfigDTO;
 import com.yuan.chatweb.model.entity.ChatDO;
 import com.yuan.chatweb.model.entity.LLMConfigDO;
 import com.yuan.chatweb.model.entity.MessageDO;
@@ -38,24 +39,17 @@ public interface LLMConfigConverter {
     LLMConfigVO toLLMConfigVO(LLMConfigDO configDO);
 
     /**
-     * ChatDO转ChatVO
+     * LLMConfigDO转LLMConfigDTO
      *
-     * @param chatDO DO对象
-     * @return VO对象
+     * @param configDO DO对象
+     * @return DTO对象
      */
-    @Mapping(source = "modelConfigId", target = "modelConfigId")
-    @Mapping(source = "createdAt", target = "createdAt")
-    @Mapping(source = "updatedAt", target = "updatedAt")
-    ChatVO toChatVO(ChatDO chatDO);
+    LLMConfigDTO toLLMConfigDTO(LLMConfigDO configDO);
 
     /**
-     * MessageDO转MessageVO
-     *
-     * @param messageDO DO对象
-     * @return VO对象
+     * LLMConfigVO转LLMConfigDTO
+      * @param configVO VO对象
+      * @return DTO对象
      */
-    @Mapping(source = "conversationId", target = "conversationId")
-    @Mapping(source = "senderType", target = "senderType")
-    @Mapping(source = "createdAt", target = "createdAt")
-    MessageVO toMessageVO(MessageDO messageDO);
+    LLMConfigDTO toLLMConfigDTO(LLMConfigVO configVO);
 }

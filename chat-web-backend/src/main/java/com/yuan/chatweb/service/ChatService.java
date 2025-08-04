@@ -1,7 +1,7 @@
 package com.yuan.chatweb.service;
 
 import com.yuan.chatweb.model.entity.ChatDO;
-import com.yuan.chatweb.model.request.llm.ChatRequest;
+import com.yuan.chatweb.model.request.chat.ChatCreateRequest;
 import com.yuan.chatweb.model.vo.ChatVO;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface ChatService {
      * @param request 请求参数
      * @return 对话信息
      */
-    ChatVO createChat(Long userId, ChatRequest request);
+    ChatVO createChat(Long userId, ChatCreateRequest request);
 
     /**
      * 获取用户对话列表
