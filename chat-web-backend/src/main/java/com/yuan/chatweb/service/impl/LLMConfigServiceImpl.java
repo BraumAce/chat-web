@@ -1,16 +1,21 @@
 package com.yuan.chatweb.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yuan.chatweb.config.LLMConfig;
+import com.yuan.chatweb.enums.exception.UserErrorCode;
+import com.yuan.chatweb.mapper.UserMapper;
+import com.yuan.chatweb.model.dto.ExtraInfo;
+import com.yuan.chatweb.model.dto.LLMConfigDTO;
 import com.yuan.chatweb.model.entity.UserDO;
 import com.yuan.chatweb.utils.convert.LLMConfigConverter;
 import com.yuan.chatweb.enums.exception.LLMErrorCode;
 import com.yuan.chatweb.mapper.LLMConfigMapper;
 import com.yuan.chatweb.model.entity.LLMConfigDO;
 import com.yuan.chatweb.model.request.llm.LLMConfigRequest;
-import com.yuan.chatweb.model.vo.LLMConfigVO;
 import com.yuan.chatweb.service.LLMConfigService;
 import com.yuan.chatweb.utils.ThrowUtil;
 import org.springframework.stereotype.Service;
@@ -34,8 +39,11 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
     @Resource
     private LLMConfig llmConfig;
 
+    @Resource
+    private UserMapper userMapper;
+
     @Override
-    public LLMConfigVO addConfig(LLMConfigRequest request) {
+    public LLMConfigDTO addConfig(LLMConfigRequest request) {
         // 使用转换器将Request转换为DO
         LLMConfigDO configDO = LLMConfigConverter.INSTANCE.toLLMConfigDO(request);
         
@@ -44,11 +52,11 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
         ThrowUtil.throwIf(!saved, LLMErrorCode.CONFIG_OPERATION_ERROR, "添加模型配置失败");
 
         // 转换为VO并返回
-        return LLMConfigConverter.INSTANCE.toLLMConfigVO(configDO);
+        return LLMConfigConverter.INSTANCE.toLLMConfigDTO(configDO);
     }
 
     @Override
-    public LLMConfigVO updateConfig(Long id, LLMConfigRequest request) {
+    public LLMConfigDTO updateConfig(Long id, LLMConfigRequest request) {
         // 检查是否存在指定ID的模型配置
         LLMConfigDO existingConfig = llmConfigMapper.selectById(id);
         ThrowUtil.throwIf(existingConfig == null, LLMErrorCode.CONFIG_NOT_FOUND, "模型配置不存在");
@@ -63,7 +71,7 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
 
         // 查询更新后的数据并返回
         LLMConfigDO updatedConfig = llmConfigMapper.selectById(id);
-        return LLMConfigConverter.INSTANCE.toLLMConfigVO(updatedConfig);
+        return LLMConfigConverter.INSTANCE.toLLMConfigDTO(updatedConfig);
     }
 
     @Override
@@ -80,7 +88,7 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
     }
 
     @Override
-    public List<LLMConfigVO> listConfigsByUserId(Long userId) {
+    public List<LLMConfigDTO> listConfigsByUserId(Long userId) {
         // 根据用户ID查询模型配置列表
         QueryWrapper<LLMConfigDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId);
@@ -88,7 +96,7 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
 
         // 转换为VO列表并返回
         return configList.stream()
-                .map(LLMConfigConverter.INSTANCE::toLLMConfigVO)
+                .map(LLMConfigConverter.INSTANCE::toLLMConfigDTO)
                 .collect(Collectors.toList());
     }
 
@@ -109,8 +117,8 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
     }
 
     @Override
-    public LLMConfigVO getSystemDefaultConfig() {
-        LLMConfigVO systemDefault = new LLMConfigVO();
+    public LLMConfigDTO getSystemDefaultConfig() {
+        LLMConfigDTO systemDefault = new LLMConfigDTO();
         systemDefault.setId(0L);
         systemDefault.setModelName(llmConfig.getModelName());
         systemDefault.setModelId(llmConfig.getModelId());
@@ -121,21 +129,25 @@ public class LLMConfigServiceImpl extends ServiceImpl<LLMConfigMapper, LLMConfig
     }
 
     @Override
-    public LLMConfigDO getConfigById(Long id) {
-        return llmConfigMapper.selectById(id);
+    public LLMConfigDTO getConfigById(Long id) {
+        return LLMConfigConverter.INSTANCE.toLLMConfigDTO(llmConfigMapper.selectById(id));
     }
 
     @Override
-    public LLMConfigVO getCurrentConfig(Long userId) {
+    public LLMConfigDTO getCurrentConfig(Long userId) {
         // 查询用户启用的模型配置
-        LambdaQueryWrapper<LLMConfigDO> queryWrapper = new LambdaQueryWrapper<LLMConfigDO>()
-                .eq(LLMConfigDO::getId, userId)
-                .eq(LLMConfigDO::getIsEnabled, true);
-        List<LLMConfigDO> userConfigs = llmConfigMapper.selectList(queryWrapper);
+        UserDO user = userMapper.selectById(userId);
+        ThrowUtil.throwIf(Objects.isNull(user), UserErrorCode.USER_NOT_EXIST);
+        ThrowUtil.throwIf(Objects.isNull(user.getExtraInfo()), UserErrorCode.USER_EXTRA_INFO_NOT_EXIST);
+        Long modelConfigId = JSON.parseObject(user.getExtraInfo(), ExtraInfo.class).getModelConfigId();
 
-        // 如果用户有自定义的启用模型，返回第一个
-        if (!userConfigs.isEmpty()) {
-            return LLMConfigConverter.INSTANCE.toLLMConfigVO(userConfigs.get(0));
+        LambdaQueryWrapper<LLMConfigDO> queryWrapper = new LambdaQueryWrapper<LLMConfigDO>()
+                .eq(LLMConfigDO::getId, modelConfigId)
+                .eq(LLMConfigDO::getIsEnabled, true);
+        LLMConfigDO llmConfigDO = llmConfigMapper.selectOne(queryWrapper);
+
+        if (Objects.nonNull(llmConfigDO)) {
+            return LLMConfigConverter.INSTANCE.toLLMConfigDTO(llmConfigDO);
         }
 
         // 否则返回系统默认模型

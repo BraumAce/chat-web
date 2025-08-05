@@ -13,7 +13,8 @@ CREATE TABLE `user`
     `password`   VARCHAR(100)    NOT NULL COMMENT '密码',
     `email`      VARCHAR(100)    NOT NULL COMMENT '邮箱',
     `nickname`   VARCHAR(50)     NOT NULL COMMENT '昵称',
-    `avatar`     VARCHAR(255)             DEFAULT NULL COMMENT '头像URL',
+    `avatar`     VARCHAR(255)    DEFAULT NULL COMMENT '头像URL',
+    `extra_info` VARCHAR(1000)   DEFAULT NULL COMMENT '额外信息',
     `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -61,7 +62,7 @@ CREATE TABLE `message`
 (
     `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '消息ID',
     `chat_id`     BIGINT UNSIGNED NOT NULL COMMENT '对话ID',
-    `sender_type` VARCHAR(100)      NOT NULL COMMENT '发送者类型(system, user, assistant)',
+    `sender_type` VARCHAR(100)    NOT NULL COMMENT '发送者类型(system, user, assistant)',
     `content`     TEXT            NOT NULL COMMENT '消息内容',
     `created_at`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),

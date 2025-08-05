@@ -36,7 +36,7 @@ public interface LLMConfigConverter {
      * @param configDO DO对象
      * @return VO对象
      */
-    LLMConfigVO toLLMConfigVO(LLMConfigDO configDO);
+    LLMConfigVO toLLMConfigVO(LLMConfigDTO configDTO);
 
     /**
      * LLMConfigDO转LLMConfigDTO
@@ -45,11 +45,4 @@ public interface LLMConfigConverter {
      * @return DTO对象
      */
     LLMConfigDTO toLLMConfigDTO(LLMConfigDO configDO);
-
-    /**
-     * LLMConfigVO转LLMConfigDTO
-      * @param configVO VO对象
-      * @return DTO对象
-     */
-    LLMConfigDTO toLLMConfigDTO(LLMConfigVO configVO);
 }

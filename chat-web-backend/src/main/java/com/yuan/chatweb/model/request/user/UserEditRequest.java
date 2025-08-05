@@ -30,6 +30,11 @@ public class UserEditRequest {
     private String avatar;
 
     /**
+     * 模型配置ID
+     */
+    private Long modelConfigId;
+
+    /**
      * 原密码
      */
     private String oldPassword;

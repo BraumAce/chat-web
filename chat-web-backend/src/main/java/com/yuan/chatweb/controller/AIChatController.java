@@ -90,7 +90,7 @@ public class AIChatController {
     @ApiOperation("保存对话消息")
     public Result<MessageVO> saveMessage(@RequestParam Long userId,
                                          @Validated @RequestBody MessageCreateRequest request) {
-        MessageVO messageVO = messageService.sendMessage(userId, request);
+        MessageVO messageVO = messageService.saveMessage(userId, request);
         return Result.success(messageVO);
     }
 
@@ -99,24 +99,25 @@ public class AIChatController {
     public SseEmitter sendMessage(@RequestParam Long userId,
                                   @RequestBody AIChatRequest aiChatRequest,
                                   HttpServletResponse response) {
-        LLMConfigVO currentConfig = llmConfigService.getCurrentConfig(userId);
-        LLMConfigDTO llmConfigDTO = LLMConfigConverter.INSTANCE.toLLMConfigDTO(currentConfig);
+        LLMConfigDTO llmConfigDTO = llmConfigService.getCurrentConfig(userId);
         if (aiChatRequest.getStream().equals(Boolean.TRUE)) {
             // 流式返回
             response.setContentType(MediaType.TEXT_EVENT_STREAM_VALUE);
             SseEmitter emitter = new SseEmitter(180000L);
             aiChatManager.chatTextStream(aiChatRequest, llmConfigDTO, createEventSourceListener(emitter));
             return emitter;
+        } else {
+            // 非流式返回
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            try (PrintWriter writer = response.getWriter()) {
+                writer.write(aiChatManager.chatText(aiChatRequest, llmConfigDTO));
+                writer.flush();
+            } catch (IOException e) {
+                log.error("write text error", e);
+            }
+            return null;
         }
-
-        // 非流式返回
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        try (PrintWriter writer = response.getWriter()) {
-            writer.write(aiChatManager.chatText(aiChatRequest, llmConfigDTO));
-        } catch (IOException e) {
-            log.error("write text error", e);
-        }
-        return null;
     }
 
     /**
@@ -149,6 +150,7 @@ public class AIChatController {
                 } catch (IOException e) {
                     log.error("chat sse emitter error: ", e);
                     emitter.completeWithError(e);
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -158,10 +160,10 @@ public class AIChatController {
                     log.error("sse connection failure, url: {}, response code: {}", eventSource.request().url(), response.code(), t);
                     SseEmitter.SseEventBuilder errorEvent = SseEmitter.event().name("error");
                     if (response.body() != null) {
-                        errorEvent.data(response.body().source().readUtf8());
+                        errorEvent.data(response.body().string());
                     }
                     emitter.send(errorEvent);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     log.error("chat sse emitter error: ", e);
                     throw new RuntimeException(e);
                 } finally {

@@ -38,6 +38,11 @@ public class UserDTO {
     private String avatar;
 
     /**
+     * 额外信息
+     */
+    private ExtraInfo extraInfo;
+
+    /**
      * 原密码
      */
     private String oldPassword;

@@ -1,5 +1,6 @@
 package com.yuan.chatweb.model.vo;
 
+import com.yuan.chatweb.model.dto.ExtraInfo;
 import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -37,4 +38,9 @@ public class UserVO implements Serializable {
      * 头像URL
      */
     private String avatar;
+
+    /**
+     * 额外信息
+     */
+    private ExtraInfo extraInfo;
 }

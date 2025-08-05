@@ -1,9 +1,11 @@
 package com.yuan.chatweb.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yuan.chatweb.enums.exception.UserErrorCode;
 import com.yuan.chatweb.exception.BusinessException;
+import com.yuan.chatweb.model.dto.ExtraInfo;
 import com.yuan.chatweb.utils.ThrowUtil;
 import com.yuan.chatweb.mapper.UserMapper;
 import com.yuan.chatweb.model.dto.UserDTO;
@@ -97,6 +99,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
         if (request.getAvatar() != null) {
             user.setAvatar(request.getAvatar());
+        }
+        if (request.getModelConfigId() != null) {
+            ExtraInfo extraInfo = new ExtraInfo(request.getModelConfigId());
+            user.setExtraInfo(JSON.toJSONString(extraInfo));
         }
         
         // 修改密码逻辑：需要验证旧密码

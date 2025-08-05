@@ -1,8 +1,7 @@
 package com.yuan.chatweb.service;
 
-import com.yuan.chatweb.model.entity.LLMConfigDO;
+import com.yuan.chatweb.model.dto.LLMConfigDTO;
 import com.yuan.chatweb.model.request.llm.LLMConfigRequest;
-import com.yuan.chatweb.model.vo.LLMConfigVO;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public interface LLMConfigService {
      * @param request 请求参数
      * @return 配置信息
      */
-    LLMConfigVO addConfig(LLMConfigRequest request);
+    LLMConfigDTO addConfig(LLMConfigRequest request);
 
     /**
      * 更新大模型配置
@@ -28,7 +27,7 @@ public interface LLMConfigService {
      * @param request 请求参数
      * @return 配置信息
      */
-    LLMConfigVO updateConfig(Long id, LLMConfigRequest request);
+    LLMConfigDTO updateConfig(Long id, LLMConfigRequest request);
 
     /**
      * 删除大模型配置
@@ -44,7 +43,7 @@ public interface LLMConfigService {
      * @param userId 用户ID
      * @return 配置列表
      */
-    List<LLMConfigVO> listConfigsByUserId(Long userId);
+    List<LLMConfigDTO> listConfigsByUserId(Long userId);
 
     /**
      * 启用/禁用模型
@@ -60,7 +59,7 @@ public interface LLMConfigService {
      *
      * @return 系统默认模型配置
      */
-    LLMConfigVO getSystemDefaultConfig();
+    LLMConfigDTO getSystemDefaultConfig();
 
     /**
      * 根据ID获取模型配置
@@ -68,7 +67,7 @@ public interface LLMConfigService {
      * @param id 配置ID
      * @return 模型配置
      */
-    LLMConfigDO getConfigById(Long id);
+    LLMConfigDTO getConfigById(Long id);
 
     /**
      * 获取用户当前使用的模型
@@ -76,5 +75,5 @@ public interface LLMConfigService {
      * @param userId 用户ID
      * @return 当前使用的模型配置
      */
-    LLMConfigVO getCurrentConfig(Long userId);
+    LLMConfigDTO getCurrentConfig(Long userId);
 }

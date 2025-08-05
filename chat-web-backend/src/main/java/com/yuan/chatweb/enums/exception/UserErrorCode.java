@@ -17,7 +17,9 @@ public enum UserErrorCode implements ErrorCode {
     USER_PASSWORD_INCONSISTENT(10004, "两次输入的密码不一致"),
     USER_OLD_PASSWORD_ERROR(10005, "原密码错误"),
     USER_EMAIL_NOT_EXIST(10006, "邮箱不正确或不存在"),
-    USER_USERNAME_NOT_EXIST(10007, "用户名不正确或不存在");
+    USER_USERNAME_NOT_EXIST(10007, "用户名不正确或不存在"),
+    USER_EXTRA_INFO_NOT_EXIST(10008, "用户额外信息不存在"),
+    ;
 
     /**
      * 状态码

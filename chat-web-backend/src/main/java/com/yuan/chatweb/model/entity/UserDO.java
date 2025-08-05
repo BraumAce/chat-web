@@ -1,6 +1,7 @@
 package com.yuan.chatweb.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.yuan.chatweb.model.dto.ExtraInfo;
 import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -45,6 +46,11 @@ public class UserDO implements Serializable {
      * 头像URL
      */
     private String avatar;
+
+    /**
+     * 额外信息
+     */
+    private String extraInfo;
 
     /**
      * 创建时间
