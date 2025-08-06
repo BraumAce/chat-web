@@ -1,14 +1,19 @@
 // src/App.tsx
-import { Button } from 'antd'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
+import LoginPage from './pages/login';
+import ChatPage from './pages/chat';
 
 function App() {
   return (
-    <div style={{ padding: 50 }}>
-      <h1>AIChat-Web</h1>
-      <Button type="primary">你好，世界！</Button>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/chat" element={<ChatPage />} />
+      </Routes>
+    </Router>
   )
 }
 
-export default App
+export default App;
