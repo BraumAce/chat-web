@@ -1,6 +1,5 @@
 package com.yuan.chatweb.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.yuan.chatweb.common.Result;
 import com.yuan.chatweb.manager.AIChatManager;
 import com.yuan.chatweb.model.dto.LLMConfigDTO;
@@ -8,12 +7,10 @@ import com.yuan.chatweb.model.request.chat.ChatCreateRequest;
 import com.yuan.chatweb.model.request.message.AIChatRequest;
 import com.yuan.chatweb.model.request.message.MessageCreateRequest;
 import com.yuan.chatweb.model.vo.ChatVO;
-import com.yuan.chatweb.model.vo.LLMConfigVO;
 import com.yuan.chatweb.model.vo.MessageVO;
 import com.yuan.chatweb.service.ChatService;
 import com.yuan.chatweb.service.LLMConfigService;
 import com.yuan.chatweb.service.MessageService;
-import com.yuan.chatweb.utils.convert.LLMConfigConverter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +37,6 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping("/ai/chat")
-@Api(tags = "AI对话接口")
 @Slf4j
 public class AIChatController {
 

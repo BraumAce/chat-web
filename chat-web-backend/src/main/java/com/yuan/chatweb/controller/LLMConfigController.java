@@ -6,7 +6,6 @@ import com.yuan.chatweb.model.request.llm.LLMConfigRequest;
 import com.yuan.chatweb.model.vo.LLMConfigVO;
 import com.yuan.chatweb.service.LLMConfigService;
 import com.yuan.chatweb.utils.convert.LLMConfigConverter;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/llm/config")
-@Api(tags = "大模型配置接口")
 public class LLMConfigController {
 
     @Resource

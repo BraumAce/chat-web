@@ -8,7 +8,6 @@ import com.yuan.chatweb.model.vo.UserVO;
 import com.yuan.chatweb.utils.convert.UserConvert;
 import com.yuan.chatweb.common.Result;
 import com.yuan.chatweb.service.UserService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,6 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/api/user")
-@Api(tags = "用户相关接口")
 public class UserController {
 
     @Resource
